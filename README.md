@@ -52,3 +52,4 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 
 Developed by
 - Tejeswar Naidu.S(https://github.com/Tejeswar001)
+- Navya Ramani.G(https://github.com/navyagona)
