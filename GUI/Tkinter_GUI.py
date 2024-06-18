@@ -4,7 +4,7 @@ from functools import partial
 
 class Zomato():
     
-    conn = mysql.connector.connect(**{'host':'localhost', 'user':'root','password':'Tejeswar2006','database':'zomato_clone'})
+    conn = mysql.connector.connect(**{'host':'localhost', 'user':'root','password': 'Password','database':'zomato_clone'})
     print("Connected")
 
     def __init__(self, root):
