@@ -6,7 +6,7 @@ This project is a mini Zomato clone developed using Python Tkinter for the user 
 ## Features
 
 - **User Authentication**: Users can sign up, log in, and manage their accounts.
-- **Browse Restaurants**: Browse restaurants based on location and cuisine.
+- **Browse Restaurants**: Browse restaurants based on cuisine.
 - **View Menus**: View menus of restaurants with prices and details.
 - **Place Orders**: Users can place orders from the available menu items.
 - **Order History**: Users can view their order history.
