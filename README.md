@@ -21,7 +21,7 @@ This project is a mini Zomato clone developed using Python Tkinter for the user 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/zomato-clone.git
+   git clone https://github.com/Tejeswar001/Zomato-Clone-with-Python-Tkinter-and-MySQL.git
    ```
 2. Install required dependencies:
    ```bash
