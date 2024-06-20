@@ -70,7 +70,6 @@ def open_signup_window():
     signup_button = tk.Button(signup_window, text="Signup", command=register_user)
     signup_button.pack()
 
-# Function to handle user registration
 def register_user():
     signup_username = signup_username_entry.get()
     signup_password = signup_password_entry.get()
@@ -78,7 +77,6 @@ def register_user():
     signup_profile_info = signup_profile_info_entry.get()
 
     try:
-        # Connect to MySQL database
         db = mysql.connector.connect(
             host="localhost",
             user="host",  # Replace with your MySQL username
@@ -91,7 +89,6 @@ def register_user():
 
         cursor = db.cursor()
 
-        # Insert new user into the Users table
         query = "INSERT INTO Users (username, password, email, other_profile_info) VALUES (%s, %s, %s, %s)"
         cursor.execute(query, (signup_username, signup_password, signup_email, signup_profile_info))
         db.commit()
@@ -110,7 +107,6 @@ def register_user():
             db.close()
             print("MySQL connection closed")
 
-# GUI setup for login
 root = tk.Tk()
 root.title("Zomato Clone - Login")
 
