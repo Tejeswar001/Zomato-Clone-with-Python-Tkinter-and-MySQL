@@ -7,7 +7,7 @@ import mysql.connector #type:ignore
 connection = mysql.connector.connect(
     host='localhost',
     user='root',
-    password='manohar@2006',
+    password='manohar',
     database='zomato_clone'
 )
 
