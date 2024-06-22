@@ -324,10 +324,10 @@ class ZomatoCloneApp:
         label = Label(title_frame, text="Order History", font=("arial", 30, "normal"), bg="#FFCCCC")
         label.pack(side="left", padx=50)
 
-        order_history_frame = Frame(order_history_win, bg="#f7f7f7")
+        order_history_frame = Frame(order_history_win, bg="#FFCCCC")
         order_history_frame.pack(fill="both", expand=True)
 
-        canvas = Canvas(order_history_frame, width=760, height=560, bg="#FFCCCC")
+        canvas = Canvas(order_history_frame, bg="#FFCCCC")
         canvas.pack(side="left", fill="both", expand=True)
 
         scrollbar = Scrollbar(order_history_frame, orient="vertical", command=canvas.yview)
@@ -336,8 +336,15 @@ class ZomatoCloneApp:
         canvas.configure(yscrollcommand=scrollbar.set)
 
         inner_frame = Frame(canvas, bg="#f7f7f7")
-        canvas.create_window((0, 0), window=inner_frame, anchor="nw")
-        inner_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        inner_frame_id = canvas.create_window((0, 0), window=inner_frame, anchor="nw")
+
+        def on_frame_configure(event):
+            canvas.configure(scrollregion=canvas.bbox("all"))
+            # Update the width of the inner_frame to match the canvas width minus the scrollbar width
+            canvas.itemconfig(inner_frame_id, width=canvas.winfo_width())
+
+        inner_frame.bind("<Configure>", on_frame_configure)
+        canvas.bind("<Configure>", on_frame_configure)
 
         # Replace `login_in_store` with the actual user_id or method to get the logged-in user's ID
         user_id = 1  # example user_id
@@ -349,7 +356,7 @@ class ZomatoCloneApp:
 
                 order_frame = Frame(inner_frame, bg="#f7f7f7", highlightbackground="gray", highlightthickness=1, padx=10, pady=10)
                 order_frame.pack(fill="x", padx=20, pady=10)
-                order_frame.configure(bg = '#FFCCCC')
+                order_frame.configure(bg='#FFCCCC')
 
                 # Header frame for restaurant name, description, and view menu button
                 header_frame = Frame(order_frame, bg="#f7f7f7")
@@ -389,10 +396,10 @@ class ZomatoCloneApp:
                 total_price_label.pack(side="right")
 
         else:
-            label = Label(inner_frame, text="No orders to display.", font=("Segoe UI", 12),bg = '#FFCCCC', fg="gray")
+            label = Label(inner_frame, text="No orders to display.", font=("Segoe UI", 12), bg='#FFCCCC', fg="gray")
             label.pack(pady=20)
 
-        close_button = Button(title_frame, text="Home", command=order_history_win.destroy,bg='#FF6666', font=('arial', 15, 'normal'))
+        close_button = Button(title_frame, text="Home", command=order_history_win.destroy, bg='#FF6666', font=('arial', 15, 'normal'))
         close_button.pack(pady=20, side=RIGHT)
 
     def view_history(self):
