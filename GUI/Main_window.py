@@ -14,7 +14,7 @@ class ZomatoCloneApp:
         self.conn = mysql.connector.connect(
             host='localhost',
             user='root',
-            password='Tejeswar2006',
+            password='Password',
             database='zomato_clone'
         )
         print("Connected to MySQL database")
