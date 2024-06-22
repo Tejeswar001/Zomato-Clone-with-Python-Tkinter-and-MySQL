@@ -1,134 +1,151 @@
-import tkinter as tk
+from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
 import mysql.connector
 
-# Function to handle user authentication
-def authenticate_user():
-    username = username_entry.get()
-    password = password_entry.get()
+class UserAuthentication:
+    def __init__(self, root):
+        self.root = root
+        self.root.geometry('400x400')
+        self.root.configure(background='#FFCCCC')  # Light red background for root
+        self.root.title("User Authentication")
 
-    try:
         # Connect to MySQL database
-        db = mysql.connector.connect(
-            host="localhost",
-            user="host",  # Replace with your MySQL username
-            password="12345678",  # Replace with your MySQL password
-            database="zomato_clone"
-        )
-
-        if db.is_connected():
+        try:
+            self.conn = mysql.connector.connect(
+                host='localhost',
+                user='root',
+                password='12345678',
+                database='zomato_clone'
+            )
             print("Connected to MySQL database")
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            messagebox.showerror("Database Connection Error", f"Error connecting to the database: {err}")
+            return
 
-        cursor = db.cursor()
+        # Create a frame to hold the elements
+        self.frame = Frame(self.root, bg='#FFCCCC')  # Light red background for frame
+        self.frame.pack(pady=20, fill=BOTH, expand=True)
 
-        # Check if the entered credentials exist in the Users table
-        query = "SELECT * FROM Users WHERE username = %s AND password = %s"
-        cursor.execute(query, (username, password))
-        user = cursor.fetchone()
+        # Label for the title
+        Label(self.frame, text='Zomato Clone', bg='#FFCCCC', font=('arial', 20, 'bold')).pack(pady=(0, 10))
 
-        if user:
-            welcome_message = "Welcome to Zomato, {}!".format(username)
-            messagebox.showinfo("Login Successful", welcome_message)
-            # Here you can proceed to open the main application window or perform other actions
+        # Login Section
+        Label(self.frame, text='Login', bg='#FFCCCC', font=('arial', 15, 'bold')).pack()
+        self.username_label = Label(self.frame, text='Username', bg='#FFCCCC', font=('arial', 12))
+        self.username_label.pack(pady=(10, 5))
+        self.username_entry = Entry(self.frame, font=('arial', 12))
+        self.username_entry.pack(pady=5)
+
+        self.password_label = Label(self.frame, text='Password', bg='#FFCCCC', font=('arial', 12))
+        self.password_label.pack(pady=(10, 5))
+        self.password_entry = Entry(self.frame, show='*', font=('arial', 12))
+        self.password_entry.pack(pady=5)
+
+        self.login_button = Button(self.frame, text='Login', bg='#F0F8FF', font=('arial', 12), command=self.login)
+        self.login_button.pack(pady=10)
+
+        # Signup Button
+        self.signup_button = Button(self.frame, text='Signup', bg='#F0F8FF', font=('arial', 12), command=self.open_signup_window)
+        self.signup_button.pack(pady=10)
+
+    def login(self):
+        username = self.username_entry.get()
+        password = self.password_entry.get()
+
+        if username == '' or password == '':
+            messagebox.showerror("Error", "All fields are required!")
         else:
-            messagebox.showerror("Login Failed", "Invalid username or password")
+            try:
+                c = self.conn.cursor()
+                query = "SELECT * FROM users WHERE username = %s AND password = %s"
+                c.execute(query, (username, password))
+                user = c.fetchone()
 
-    except mysql.connector.Error as err:
-        messagebox.showerror("Database Error", f"Error connecting to database: {err}")
-        print(f"Error: {err}")
+                if user:
+                    messagebox.showinfo("Success", "Login Successful!")
+                    self.root.destroy()  # Close the login window
+                    # Add code to open your main application window or instance here
+                else:
+                    messagebox.showerror("Error", "Invalid username or password")
+            except Exception as e:
+                print(f"Error during login: {e}")
+                messagebox.showerror("Error", "An error occurred during login")
 
-    finally:
-        # Close database connection
-        if 'db' in locals() and db.is_connected():
-            cursor.close()
-            db.close()
-            print("MySQL connection closed")
+    def open_signup_window(self):
+        signup_window = Toplevel(self.root)
+        signup_window.geometry('400x400')
+        signup_window.configure(background='#FFCCCC')  # Light red background for signup window
+        signup_window.title("Signup")
 
-# Function to open the signup window
-def open_signup_window():
-    global signup_window, signup_username_entry, signup_password_entry, signup_email_entry, signup_profile_info_entry
+        Label(signup_window, text='Signup', bg='#FFCCCC', font=('arial', 20, 'bold')).pack(pady=(10, 10))
 
-    signup_window = tk.Toplevel(root)
-    signup_window.title("Zomato Clone - Signup")
+        # New Username
+        Label(signup_window, text='New Username', bg='#FFCCCC', font=('arial', 12)).pack(pady=(10, 5))
+        new_username_entry = Entry(signup_window, font=('arial', 12))
+        new_username_entry.pack(pady=5)
 
-    tk.Label(signup_window, text="Username:").pack()
-    signup_username_entry = tk.Entry(signup_window, width=30)
-    signup_username_entry.pack()
+        # New Password
+        Label(signup_window, text='New Password', bg='#FFCCCC', font=('arial', 12)).pack(pady=(10, 5))
+        new_password_entry = Entry(signup_window, show='*', font=('arial', 12))
+        new_password_entry.pack(pady=5)
 
-    tk.Label(signup_window, text="Password:").pack()
-    signup_password_entry = tk.Entry(signup_window, width=30, show="*")
-    signup_password_entry.pack()
+        # Email
+        Label(signup_window, text='Email', bg='#FFCCCC', font=('arial', 12)).pack(pady=(10, 5))
+        email_entry = Entry(signup_window, font=('arial', 12))
+        email_entry.pack(pady=5)
 
-    tk.Label(signup_window, text="Email:").pack()
-    signup_email_entry = tk.Entry(signup_window, width=30)
-    signup_email_entry.pack()
+        # Profile Info
+        Label(signup_window, text='Other Profile Info', bg='#FFCCCC', font=('arial', 12)).pack(pady=(10, 5))
+        other_profile_info_entry = Entry(signup_window, font=('arial', 12))
+        other_profile_info_entry.pack(pady=5)
 
-    tk.Label(signup_window, text="Profile Info:").pack()
-    signup_profile_info_entry = tk.Entry(signup_window, width=30)
-    signup_profile_info_entry.pack()
+        def signup():
+            new_username = new_username_entry.get()
+            new_password = new_password_entry.get()
+            email = email_entry.get()
+            other_profile_info = other_profile_info_entry.get()
 
-    signup_button = tk.Button(signup_window, text="Signup", command=register_user)
-    signup_button.pack()
+            print(f"Signup attempt with Username: {new_username}, Password: {new_password}, Email: {email}, Other Profile Info: {other_profile_info}")
 
-def register_user():
-    signup_username = signup_username_entry.get()
-    signup_password = signup_password_entry.get()
-    signup_email = signup_email_entry.get()
-    signup_profile_info = signup_profile_info_entry.get()
+            if new_username == '' or new_password == '' or email == '' or other_profile_info == '':
+                messagebox.showerror("Error", "All fields are required!")
+            else:
+                try:
+                    c = self.conn.cursor()
+                    # Check if the username already exists
+                    query = "SELECT * FROM users WHERE username = %s"
+                    c.execute(query, (new_username,))
+                    existing_user = c.fetchone()
 
-    try:
-        db = mysql.connector.connect(
-            host="localhost",
-            user="host",  # Replace with your MySQL username
-            password="12345678",  # Replace with your MySQL password
-            database="zomato_clone"
-        )
+                    if existing_user:
+                        print(f"Username {new_username} already exists.")
+                        messagebox.showerror("Error", "Username already exists. Please choose a different username.")
+                    else:
+                        # Insert new user into database
+                        insert_query = "INSERT INTO users (username, password, email, other_profile_info) VALUES (%s, %s, %s, %s)"
+                        c.execute(insert_query, (new_username, new_password, email, other_profile_info))
+                        self.conn.commit()
+                        print(f"Inserted user: {new_username}")
+                        messagebox.showinfo("Success", "Signup Successful! You can now login.")
+                        signup_window.destroy()
+                except mysql.connector.Error as err:
+                    print(f"MySQL Error during signup: {err}")
+                    messagebox.showerror("Error", f"MySQL Error during signup: {err}")
+                except Exception as e:
+                    print(f"General Error during signup: {e}")
+                    messagebox.showerror("Error", f"An error occurred during signup: {e}")
 
-        if db.is_connected():
-            print("Connected to MySQL database")
+        signup_button = Button(signup_window, text='Signup', bg='#F0F8FF', font=('arial', 12), command=signup)
+        signup_button.pack(pady=20)
 
-        cursor = db.cursor()
+    def run(self):
+        self.root.mainloop()
 
-        query = "INSERT INTO Users (username, password, email, other_profile_info) VALUES (%s, %s, %s, %s)"
-        cursor.execute(query, (signup_username, signup_password, signup_email, signup_profile_info))
-        db.commit()
 
-        messagebox.showinfo("Signup Successful", "Account created successfully! Please log in.")
-        signup_window.destroy()  # Close the signup window after successful registration
-
-    except mysql.connector.Error as err:
-        messagebox.showerror("Database Error", f"Error connecting to database: {err}")
-        print(f"Error: {err}")
-
-    finally:
-        # Close database connection
-        if 'db' in locals() and db.is_connected():
-            cursor.close()
-            db.close()
-            print("MySQL connection closed")
-
-root = tk.Tk()
-root.title("Zomato Clone - Login")
-
-# Username label and entry
-username_label = tk.Label(root, text="Username:")
-username_label.pack()
-username_entry = tk.Entry(root, width=30)
-username_entry.pack()
-
-# Password label and entry
-password_label = tk.Label(root, text="Password:")
-password_label.pack()
-password_entry = tk.Entry(root, width=30, show="*")
-password_entry.pack()
-
-# Login button
-login_button = tk.Button(root, text="Login", command=authenticate_user)
-login_button.pack()
-
-# Signup button
-signup_button = tk.Button(root, text="Signup", command=open_signup_window)
-signup_button.pack()
-
-root.mainloop()
+if __name__ == "__main__":
+    root = Tk()
+    app = UserAuthentication(root)
+    app.run()
 
