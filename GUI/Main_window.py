@@ -14,7 +14,7 @@ class ZomatoCloneApp:
         self.conn = mysql.connector.connect(
             host='localhost',
             user='root',
-            password='Password',
+            password='Tejeswar2006',
             database='zomato_clone'
         )
         print("Connected to MySQL database")
@@ -222,7 +222,7 @@ class ZomatoCloneApp:
             order_button.pack(side=RIGHT, padx=(10, 0))
 
             # Rating button
-            def rate_item():
+            def rate_item(item_name,menu_id):
                 # Function to handle rating
                 rate_window = Toplevel(menu_window)
                 rate_window.geometry('300x200')
@@ -234,7 +234,7 @@ class ZomatoCloneApp:
                 rating_entry = Entry(rate_window, font=('arial', 12))
                 rating_entry.pack(pady=10)
 
-                def submit_rating():
+                def submit_rating(menu_id):
                     try:
                         rating = int(rating_entry.get())
                         if rating < 1 or rating > 5:
@@ -244,7 +244,7 @@ class ZomatoCloneApp:
                             c = self.conn.cursor()
                             # 1. Fetch existing ratings
                             query = "SELECT total_rating, average_rating FROM menus WHERE menu_id = %s"
-                            c.execute(query, (menu_item[0],))
+                            c.execute(query, (menu_id,))
                             result = c.fetchone()
 
                             if result:
@@ -253,11 +253,11 @@ class ZomatoCloneApp:
 
                                 # Calculate new average rating
                                 new_total_ratings = total_ratings + 1
-                                new_avg_rating = ((avg_rating * total_ratings) + rating) / new_total_ratings
+                                new_avg_rating = ((avg_rating * total_ratings) + rating) // new_total_ratings
 
                                 # Update database with new values
                                 update_query = "UPDATE menus SET total_rating = %s, average_rating = %s WHERE menu_id = %s"
-                                c.execute(update_query, (new_total_ratings, new_avg_rating, menu_item[0]))
+                                c.execute(update_query, (new_total_ratings, new_avg_rating, menu_id))
                                 self.conn.commit()
 
                                 # Provide feedback to the user
@@ -273,10 +273,10 @@ class ZomatoCloneApp:
                         messagebox.showerror("Error", "Invalid rating. Please enter a number.")
 
                 # Submit button
-                submit_button = Button(rate_window, text="Submit", command=submit_rating)
+                submit_button = Button(rate_window, text="Submit", command=lambda a = menu_id:submit_rating(a))
                 submit_button.pack()
 
-            rating_button = Button(item_container, text=f"Rating: {item_rating} ⭐", bg='#F0F8FF', font=('arial', 10, 'normal'), command=rate_item)
+            rating_button = Button(item_container, text=f"Rating: {item_rating} ⭐", bg='#F0F8FF', font=('arial', 10, 'normal'), command=lambda a= item_name,b=menu_item[0]:rate_item(a,b))
             rating_button.pack(side=RIGHT, padx=(10, 0))
 
             # Description label
@@ -287,8 +287,116 @@ class ZomatoCloneApp:
         menu_frame.bind("<Configure>", lambda event: canvas.configure(scrollregion=canvas.bbox("all")))
         canvas.bind("<Configure>", lambda event: canvas.itemconfig(menu_frame_id, width=event.width))
 
+
+
+    def order_history(self, user_id):
+        query = '''
+        SELECT
+            o.order_id,
+            o.order_date,
+            r.location,
+            r.other_info,
+            r.name AS restaurant_name,
+            GROUP_CONCAT(m.item_name) AS menu_items,
+            GROUP_CONCAT(od.quantity) AS quantities,
+            SUM(od.price * od.quantity) AS total_price
+        FROM Orders o
+        JOIN OrderDetails od ON o.order_id = od.order_id
+        JOIN Menus m ON od.menu_id = m.menu_id
+        JOIN Restaurants r ON o.restaurant_id = r.restaurant_id
+        WHERE o.user_id = %s
+        GROUP BY o.order_id, o.order_date, r.name
+        ORDER BY o.order_id;
+        '''
+        c = self.conn.cursor()
+        c.execute(query,(user_id,))
+        return c.fetchall()
+
+    def order_history_window(self):
+        order_history_win = Toplevel(self.root)
+        order_history_win.title("Order History Window")
+        order_history_win.geometry("800x600")
+        order_history_win.configure(bg="#FFCCCC")
+
+        title_frame = Frame(order_history_win, bg="#FFCCCC")
+        title_frame.pack(fill="x", padx=10, pady=10)
+
+        label = Label(title_frame, text="Order History", font=("arial", 30, "normal"), bg="#FFCCCC")
+        label.pack(side="left", padx=50)
+
+        order_history_frame = Frame(order_history_win, bg="#f7f7f7")
+        order_history_frame.pack(fill="both", expand=True)
+
+        canvas = Canvas(order_history_frame, width=760, height=560, bg="#FFCCCC")
+        canvas.pack(side="left", fill="both", expand=True)
+
+        scrollbar = Scrollbar(order_history_frame, orient="vertical", command=canvas.yview)
+        scrollbar.pack(side="right", fill="y")
+
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        inner_frame = Frame(canvas, bg="#f7f7f7")
+        canvas.create_window((0, 0), window=inner_frame, anchor="nw")
+        inner_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        # Replace `login_in_store` with the actual user_id or method to get the logged-in user's ID
+        user_id = 1  # example user_id
+        orders = self.order_history(user_id)
+
+        if orders:
+            for order in orders:
+                order_id, order_date, location, other_info, restaurant_name, menu_items, quantities, total_price = order
+
+                order_frame = Frame(inner_frame, bg="#f7f7f7", highlightbackground="gray", highlightthickness=1, padx=10, pady=10)
+                order_frame.pack(fill="x", padx=20, pady=10)
+                order_frame.configure(bg = '#FFCCCC')
+
+                # Header frame for restaurant name, description, and view menu button
+                header_frame = Frame(order_frame, bg="#f7f7f7")
+                header_frame.pack(fill="x", pady=10)
+
+                restaurant_label = Label(header_frame, text=restaurant_name, font=("Segoe UI", 14, "bold"), fg="black", bg="#f7f7f7")
+                restaurant_label.pack(side="left")
+
+                restaurant_description_label = Label(header_frame, text=other_info, font=("Segoe UI", 12), fg="gray", bg="#f7f7f7")
+                restaurant_description_label.pack(side="left", padx=10)
+
+                view_menu_button = Button(header_frame, text="View Menu", command=lambda restaurant_id=order_id: self.view_menu(restaurant_id), bg="#33cc33", fg="white", font=("Segoe UI", 10, "bold"))
+                view_menu_button.pack(side="right", padx=10)
+
+                # Location label (assuming restaurant_address exists)
+                location_label = Label(order_frame, text=f"{location}", font=("Segoe UI", 12), fg="black", bg="#f7f7f7")
+                location_label.pack(anchor="w", pady=10)
+
+                items = menu_items.split(',')
+                quantities = quantities.split(',')
+
+                items_frame = Frame(order_frame, bg="#f7f7f7")
+                items_frame.pack(pady=10)
+
+                for item, quantity in zip(items, quantities):
+                    item_label = Label(items_frame, text=f"{item} x {quantity}", font=("Segoe UI", 12), fg="black", bg="#f7f7f7")
+                    item_label.pack(anchor="w")
+
+                # Footer frame for order date and total price
+                footer_frame = Frame(order_frame, bg="#f7f7f7")
+                footer_frame.pack(fill="x", pady=10)
+
+                order_date_label = Label(footer_frame, text=f" {order_date}", font=("Segoe UI", 12), fg="black", bg="#f7f7f7")
+                order_date_label.pack(side="left")
+
+                total_price_label = Label(footer_frame, text=f"Total Price: ₹{total_price}", font=("Segoe UI", 12, "bold"), fg="black", bg="#f7f7f7")
+                total_price_label.pack(side="right")
+
+        else:
+            label = Label(inner_frame, text="No orders to display.", font=("Segoe UI", 12),bg = '#FFCCCC', fg="gray")
+            label.pack(pady=20)
+
+        close_button = Button(title_frame, text="Home", command=order_history_win.destroy,bg='#FF6666', font=('arial', 15, 'normal'))
+        close_button.pack(pady=20, side=RIGHT)
+
     def view_history(self):
-        print('View History button clicked')
+        self.order_history_window()
 
     def you(self):
         print('YOU button clicked')
