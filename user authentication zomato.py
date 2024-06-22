@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 import mysql.connector
+from main_page1 import ZomatoCloneApp
 
 class UserAuthentication:
     def __init__(self, root):
@@ -66,7 +67,10 @@ class UserAuthentication:
                 if user:
                     messagebox.showinfo("Success", "Login Successful!")
                     self.root.destroy()  # Close the login window
-                    # Add code to open your main application window or instance here
+
+                    start_zomato_app()
+
+                
                 else:
                     messagebox.showerror("Error", "Invalid username or password")
             except Exception as e:
@@ -139,13 +143,18 @@ class UserAuthentication:
 
         signup_button = Button(signup_window, text='Signup', bg='#F0F8FF', font=('arial', 12), command=signup)
         signup_button.pack(pady=20)
+        
+       
 
-    def run(self):
-        self.root.mainloop()
+
+def start_zomato_app():
+    root = Tk()
+    app = ZomatoCloneApp(root)
+    root.mainloop()
 
 
 if __name__ == "__main__":
     root = Tk()
     app = UserAuthentication(root)
-    app.run()
+    root.mainloop()
 
