@@ -132,8 +132,10 @@ class UserAuthentication:
                         c.execute(insert_query, (new_username, new_password, email, other_profile_info))
                         self.conn.commit()
                         print(f"Inserted user: {new_username}")
-                        messagebox.showinfo("Success", "Signup Successful! You can now login.")
+                        messagebox.showinfo("Success", "Signup Successful! You can now enjoy Zomato.")
                         signup_window.destroy()
+                        self.root.destroy()
+                        start_zomato_app()
                 except mysql.connector.Error as err:
                     print(f"MySQL Error during signup: {err}")
                     messagebox.showerror("Error", f"MySQL Error during signup: {err}")
