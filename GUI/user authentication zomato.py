@@ -16,7 +16,7 @@ class UserAuthentication:
             self.conn = mysql.connector.connect(
                 host='localhost',
                 user='root',
-                password='12345678',
+                password=' ',#password
                 database='zomato_clone'
             )
             print("Connected to MySQL database")
