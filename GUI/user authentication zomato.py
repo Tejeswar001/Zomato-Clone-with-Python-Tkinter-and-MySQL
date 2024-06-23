@@ -148,7 +148,6 @@ class UserAuthentication:
         
        
 
-
 def start_zomato_app():
     root = Tk()
     app = ZomatoCloneApp(root)
