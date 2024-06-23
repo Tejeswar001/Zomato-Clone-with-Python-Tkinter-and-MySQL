@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 import mysql.connector
-from main_page1 import ZomatoCloneApp
+from Main_window import ZomatoCloneApp
 
 class UserAuthentication:
     def __init__(self, root):
@@ -16,9 +16,9 @@ class UserAuthentication:
             self.conn = mysql.connector.connect(
                 host='localhost',
                 user='root',
-                password=' ',#password
+                password='Tejeswar2006',
                 database='zomato_clone'
-            )
+                )
             print("Connected to MySQL database")
         except mysql.connector.Error as err:
             print(f"Error: {err}")
