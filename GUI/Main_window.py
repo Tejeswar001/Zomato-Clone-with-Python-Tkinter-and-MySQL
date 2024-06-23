@@ -14,7 +14,7 @@ class ZomatoCloneApp:
         self.conn = mysql.connector.connect(
             host='localhost',
             user='root',
-            password='Password',
+            password='PASSWORD',
             database='zomato_clone'
         )
         print("Connected to MySQL database")
@@ -335,7 +335,7 @@ class ZomatoCloneApp:
 
         canvas.configure(yscrollcommand=scrollbar.set)
 
-        inner_frame = Frame(canvas, bg="#f7f7f7")
+        inner_frame = Frame(canvas, bg="#ffcccc")
         inner_frame_id = canvas.create_window((0, 0), window=inner_frame, anchor="nw")
 
         def on_frame_configure(event):
@@ -354,49 +354,49 @@ class ZomatoCloneApp:
             for order in orders:
                 order_id, order_date, location, other_info, restaurant_name, menu_items, quantities, total_price = order
 
-                order_frame = Frame(inner_frame, bg="#FFCCCC", highlightbackground="gray", highlightthickness=1, padx=10, pady=10)
+                order_frame = Frame(inner_frame, bg="#f7f7f7", highlightbackground="gray", highlightthickness=1, padx=10, pady=10)
                 order_frame.pack(fill="x", padx=20, pady=10)
-                order_frame.configure(bg='#FFCCCC')
+                order_frame.configure(bg='#f7f7f7')
 
                 # Header frame for restaurant name, description, and view menu button
-                header_frame = Frame(order_frame, bg="#FFCCCC")
+                header_frame = Frame(order_frame, bg="#f7f7f7")
                 header_frame.pack(fill="x", pady=10)
 
-                restaurant_label = Label(header_frame, text=restaurant_name, font=("Segoe UI", 14, "bold"), fg="black", bg="#FFCCCC")
+                restaurant_label = Label(header_frame, text=restaurant_name, font=("Segoe UI", 14, "bold"), fg="black", bg="#f7f7f7")
                 restaurant_label.pack(side="left")
 
-                restaurant_description_label = Label(header_frame, text=other_info, font=("Segoe UI", 12), fg="gray", bg="#FFCCCC")
+                restaurant_description_label = Label(header_frame, text=other_info, font=("Segoe UI", 12), fg="gray", bg="#f7f7f7")
                 restaurant_description_label.pack(side="left", padx=10)
 
                 view_menu_button = Button(header_frame, text="View Menu", command=lambda restaurant_id=order_id: self.view_menu(restaurant_id), bg="#33cc33", fg="white", font=("Segoe UI", 10, "bold"))
                 view_menu_button.pack(side="right", padx=10)
 
                 # Location label (assuming restaurant_address exists)
-                location_label = Label(order_frame, text=f"{location}", font=("Segoe UI", 12), fg="black", bg="#FFCCCC")
+                location_label = Label(order_frame, text=f"{location}", font=("Segoe UI", 12), fg="black", bg="#f7f7f7")
                 location_label.pack(anchor="w", pady=10)
 
                 items = menu_items.split(',')
                 quantities = quantities.split(',')
 
-                items_frame = Frame(order_frame, bg="#FFCCCC")
+                items_frame = Frame(order_frame, bg="#f7f7f7")
                 items_frame.pack(pady=10)
 
                 for item, quantity in zip(items, quantities):
-                    item_label = Label(items_frame, text=f"{item} x {quantity}", font=("Segoe UI", 12), fg="black", bg="#FFCCCC")
+                    item_label = Label(items_frame, text=f"{item} x {quantity}", font=("Segoe UI", 12), fg="black", bg="#f7f7f7")
                     item_label.pack(anchor="w")
 
                 # Footer frame for order date and total price
-                footer_frame = Frame(order_frame, bg="#FFCCCC")
+                footer_frame = Frame(order_frame, bg="#f7f7f7")
                 footer_frame.pack(fill="x", pady=10)
 
-                order_date_label = Label(footer_frame, text=f" {order_date}", font=("Segoe UI", 12), fg="black", bg="#FFCCCC")
+                order_date_label = Label(footer_frame, text=f" {order_date}", font=("Segoe UI", 12), fg="black", bg="#f7f7f7")
                 order_date_label.pack(side="left")
 
-                total_price_label = Label(footer_frame, text=f"Total Price: ₹{total_price}", font=("Segoe UI", 12, "bold"), fg="black", bg="#FFCCCC")
+                total_price_label = Label(footer_frame, text=f"Total Price: ₹{total_price}", font=("Segoe UI", 12, "bold"), fg="black", bg="#f7f7f7")
                 total_price_label.pack(side="right")
 
         else:
-            label = Label(inner_frame, text="No orders to display.", font=("Segoe UI", 12), bg='#FFCCCC', fg="gray")
+            label = Label(inner_frame, text="No orders to display.", font=("Segoe UI", 12), bg='#f7f7f7', fg="gray")
             label.pack(pady=20)
 
         close_button = Button(title_frame, text="Home", command=order_history_win.destroy, bg='#FF6666', font=('arial', 15, 'normal'))
