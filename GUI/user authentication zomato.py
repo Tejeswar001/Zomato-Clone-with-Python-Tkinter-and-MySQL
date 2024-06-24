@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-import mysql.connector
+import mysql.connector #type:ignore
 from Main_window import ZomatoCloneApp
 
 class UserAuthentication:
@@ -16,7 +16,7 @@ class UserAuthentication:
             self.conn = mysql.connector.connect(
                 host='localhost',
                 user='root',
-                password='Tejeswar2006',
+                password='Password',
                 database='zomato_clone'
                 )
             print("Connected to MySQL database")
@@ -60,15 +60,16 @@ class UserAuthentication:
         else:
             try:
                 c = self.conn.cursor()
-                query = "SELECT * FROM users WHERE username = %s AND password = %s"
+                query = "SELECT user_id,username,password FROM users WHERE username = %s AND password = %s"
                 c.execute(query, (username, password))
                 user = c.fetchone()
 
                 if user:
+                    self.user_id=user[0]
                     messagebox.showinfo("Success", "Login Successful!")
                     self.root.destroy()  # Close the login window
 
-                    start_zomato_app()
+                    start_zomato_app(self.user_id)
 
                 
                 else:
@@ -148,9 +149,9 @@ class UserAuthentication:
         
        
 
-def start_zomato_app():
+def start_zomato_app(user_id):
     root = Tk()
-    app = ZomatoCloneApp(root)
+    app = ZomatoCloneApp(root,user_id)
     root.mainloop()
 
 

@@ -4,8 +4,9 @@ import mysql.connector #type:ignore
 
 
 class ZomatoCloneApp:
-    def __init__(self, root):
+    def __init__(self, root,user_id):
         self.root = root
+        self.user_id=user_id
         self.root.geometry('879x488')
         self.root.configure(background='#FFCCCC')  # Light red background for root
         self.root.title("Home window @Zomato clone")
@@ -346,9 +347,8 @@ class ZomatoCloneApp:
         inner_frame.bind("<Configure>", on_frame_configure)
         canvas.bind("<Configure>", on_frame_configure)
 
-        # Replace `login_in_store` with the actual user_id or method to get the logged-in user's ID
-        user_id = 3  # example user_id
-        orders = self.order_history(user_id)
+        
+        orders = self.order_history(self.user_id)
 
         if orders:
             for order in orders:
@@ -368,8 +368,8 @@ class ZomatoCloneApp:
                 restaurant_description_label = Label(header_frame, text=other_info, font=("Segoe UI", 12), fg="gray", bg="#f7f7f7")
                 restaurant_description_label.pack(side="left", padx=10)
 
-                view_menu_button = Button(header_frame, text="View Menu", command=lambda restaurant_id=order_id: self.view_menu(restaurant_id), bg="#33cc33", fg="white", font=("Segoe UI", 10, "bold"))
-                view_menu_button.pack(side="right", padx=10)
+                #view_menu_button = Button(header_frame, text="View Menu", command=lambda restaurant_id=order_id: self.view_menu(restaurant_id), bg="#33cc33", fg="white", font=("Segoe UI", 10, "bold"))
+                #view_menu_button.pack(side="right", padx=10)
 
                 # Location label (assuming restaurant_address exists)
                 location_label = Label(order_frame, text=f"{location}", font=("Segoe UI", 12), fg="black", bg="#f7f7f7")
