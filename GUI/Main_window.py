@@ -418,3 +418,4 @@ if __name__ == "__main__":
     root = Tk()
     app = ZomatoCloneApp(root)
     root.mainloop()
+
