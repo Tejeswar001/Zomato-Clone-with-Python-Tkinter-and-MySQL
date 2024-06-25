@@ -368,9 +368,6 @@ class ZomatoCloneApp:
                 restaurant_description_label = Label(header_frame, text=other_info, font=("Segoe UI", 12), fg="gray", bg="#f7f7f7")
                 restaurant_description_label.pack(side="left", padx=10)
 
-                #view_menu_button = Button(header_frame, text="View Menu", command=lambda restaurant_id=order_id: self.view_menu(restaurant_id), bg="#33cc33", fg="white", font=("Segoe UI", 10, "bold"))
-                #view_menu_button.pack(side="right", padx=10)
-
                 # Location label (assuming restaurant_address exists)
                 location_label = Label(order_frame, text=f"{location}", font=("Segoe UI", 12), fg="black", bg="#f7f7f7")
                 location_label.pack(anchor="w", pady=10)
