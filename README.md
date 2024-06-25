@@ -25,7 +25,7 @@ This project is a mini Zomato clone developed using Python Tkinter for the user 
    ```
 2. Install required dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip install mysql-connector-python
    ```
 3. Set up your MySQL database:
    - Create a MySQL database named `zomato_clone`.
@@ -35,7 +35,7 @@ This project is a mini Zomato clone developed using Python Tkinter for the user 
 
 1. Run the main application:
    ```bash
-   python main.py
+    main.py
    ```
 2. Use the application to browse restaurants, view menus, and place orders.
 
