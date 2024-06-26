@@ -403,9 +403,82 @@ class ZomatoCloneApp:
         self.order_history_window()
 
 
-
     def you(self):
-        print('YOU button clicked')
+            you_window = Toplevel(self.root)
+            you_window.state('zoomed')
+            you_window.title('User Info @zomato clone')
+            you_window.configure(bg='#FFCCCC')
+
+            c = self.conn.cursor()
+            c.execute(f"select * from users where user_id = {self.user_id}")
+            r = c.fetchall()
+            result = [list(x) for x in r]
+
+            if not result:
+                Label(you_window, text='No user found', font=('arial', 30)).pack(pady=20)
+                return
+
+            Label(you_window, text='User Details', font=('arial', 30), bg='#FFCCCC').pack(pady=20)
+
+            frame = Frame(you_window)
+            frame.pack(pady=10, padx=20)
+            frame.configure(bg='#FFCCCC')
+
+            self.user_details = {
+                'Name': result[0][1],
+                'Email': result[0][3],
+                'Other profile details': result[0][4]
+            }
+
+            for key, value in self.user_details.items():
+                detail_frame = Frame(frame)
+                detail_frame.pack(anchor='w', pady=5)
+                detail_frame.configure(bg="#FFCCCC")
+
+                Label(detail_frame, text=f'{key}:', font=('arial', 25), bg='#FFCCCC').pack(padx=40, pady=30, side=LEFT)
+                Label(detail_frame, text=value, font=('arial', 25), bg='#FFCCCC').pack(pady=30, side=RIGHT)
+        
+            Button(you_window, text='EDIT', width=11, height=1, command=self.edit_user, font=('arial', 20), bg="#FF6666").pack()
+
+    def edit_user(self):
+        edit_window = Toplevel(self.root)
+        edit_window.title('Edit User Info')
+        edit_window.configure(bg='#FFCCCC')
+
+        frame = Frame(edit_window)
+        frame.pack(pady=10, padx=20)
+        frame.configure(bg='#FFCCCC')
+
+        Label(frame, text='Edit User Details', font=('arial', 30), bg='#FFCCCC').pack(pady=20)
+
+        entries = {}
+        for key, value in self.user_details.items():
+            detail_frame = Frame(frame)
+            detail_frame.pack(anchor='w', pady=5)
+            detail_frame.configure(bg="#FFCCCC")
+
+            Label(detail_frame, text=f'{key}:', font=('arial', 25), bg='#FFCCCC').pack(padx=40, pady=30, side=LEFT)
+            entry = Entry(detail_frame, font=('arial', 25))
+            entry.insert(0, value)
+            entry.pack(pady=30, side=RIGHT)
+            entries[key] = entry
+
+            def save_edits():
+                new_details = {key: entry.get() for key, entry in entries.items()}
+                try:
+                    c = self.conn.cursor()
+                    c.execute(
+                        "UPDATE users SET username = %s, email = %s, other_profile_info = %s WHERE user_id = %s",
+                        (new_details['Name'], new_details['Email'], new_details['Other profile details'], self.user_id)
+                    )
+                    self.conn.commit()
+                    messagebox.showinfo('Success', 'User details updated successfully')
+                    edit_window.destroy()
+                    self.you()  # Refresh the user details window
+                except Exception as e:
+                    messagebox.showerror('Error', str(e))
+
+        Button(edit_window, text='SAVE', width=11, height=1, command=save_edits, font=('arial', 20), bg="#FF6666").pack(pady=20)
 
     def order_(self,item):
         messagebox.showinfo("Order Status","Order Placed Successfully!!")
