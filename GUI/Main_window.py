@@ -10,6 +10,7 @@ class ZomatoCloneApp:
         self.root.geometry('879x488')
         self.root.configure(background='#FFCCCC')  # Light red background for root
         self.root.title("Home window @Zomato clone")
+        self.root.state('zoomed')
 
         # Connect to MySQL database
         self.conn = mysql.connector.connect(
@@ -170,6 +171,7 @@ class ZomatoCloneApp:
         menu_window.geometry('600x400')
         menu_window.configure(background='#FFCCCC')  # Light red background for menu window
         menu_window.title(f"Order food online in {restaurant[1]}")
+        menu_window.state('zoomed')
 
         # Heading label
         Label(menu_window, text=f"Order food online in {restaurant[1]}", bg='#FFCCCC', font=('arial', 20, 'normal')).pack(pady=(10, 10))
@@ -368,6 +370,9 @@ class ZomatoCloneApp:
                 restaurant_description_label = Label(header_frame, text=other_info, font=("Segoe UI", 12), fg="gray", bg="#f7f7f7")
                 restaurant_description_label.pack(side="left", padx=10)
 
+                #view_menu_button = Button(header_frame, text="View Menu", command=lambda restaurant_id=order_id: self.view_menu(restaurant_id), bg="#33cc33", fg="white", font=("Segoe UI", 10, "bold"))
+                #view_menu_button.pack(side="right", padx=10)
+
                 # Location label (assuming restaurant_address exists)
                 location_label = Label(order_frame, text=f"{location}", font=("Segoe UI", 12), fg="black", bg="#f7f7f7")
                 location_label.pack(anchor="w", pady=10)
@@ -400,6 +405,7 @@ class ZomatoCloneApp:
         close_button.pack(pady=20, side=RIGHT)
 
     def view_history(self):
+
         self.order_history_window()
 
 
@@ -479,12 +485,12 @@ class ZomatoCloneApp:
                     messagebox.showerror('Error', str(e))
 
         Button(edit_window, text='SAVE', width=11, height=1, command=save_edits, font=('arial', 20), bg="#FF6666").pack(pady=20)
-
+        
     def order_(self,item):
         messagebox.showinfo("Order Status","Order Placed Successfully!!")
         
 
 if __name__ == "__main__":
     root = Tk()
-    app = ZomatoCloneApp(root)
+    app = ZomatoCloneApp(root,1)
     root.mainloop()
