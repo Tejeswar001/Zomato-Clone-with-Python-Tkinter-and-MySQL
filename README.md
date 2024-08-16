@@ -52,6 +52,7 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 
 Developed by
 - Tejeswar Naidu.S(https://github.com/Tejeswar001)
+- Pavan Kota (https://github.com/pavankota59)
 - Navya Ramani.G (https://github.com/navyagona)
 - Navya Sri. B(https://github.com/Navyasri28)
 - ManoharKonala(https://github.com/ManoharKonala)
